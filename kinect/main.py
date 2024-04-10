@@ -2,9 +2,10 @@
 import freenect
 import cv2
 import frame_convert2
+import numpy as np
 
 def get_depth():
-    return frame_convert2.pretty_depth_cv(freenect.sync_get_depth()[0])
+    return frame_convert2.pretty_depth(freenect.sync_get_depth()[0])
 
 def get_video():
     return frame_convert2.video_cv(freenect.sync_get_video()[0])
@@ -14,7 +15,7 @@ video_fourcc = cv2.VideoWriter_fourcc(*'XVID')
 video_out = cv2.VideoWriter('videos/output_video.avi', video_fourcc, 20.0, (640, 480))
 
 # Define the codec for depth frames and create VideoWriter object
-depth_fourcc = cv2.VideoWriter_fourcc(*'XVID')
+depth_fourcc = cv2.VideoWriter_fourcc(*'FFV1')
 depth_out = cv2.VideoWriter('videos/output_depth.avi', depth_fourcc, 20.0, (640, 480))
 
 while True:
@@ -37,3 +38,5 @@ while True:
 video_out.release()
 depth_out.release()
 cv2.destroyAllWindows()
+
+
