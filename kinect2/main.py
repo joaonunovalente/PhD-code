@@ -2,7 +2,6 @@
 
 # PhD
 # Joao Nuno Valente, DEM, UA
-
 import os
 import cv2
 import numpy as np

@@ -6,7 +6,7 @@
 import open3d as o3d
 import numpy as np
 
-# Viewpoint parameters for visualization
+# # Viewpoint parameters for visualization
 view = {
     "class_name": "ViewTrajectory",
     "interval": 29,
@@ -27,7 +27,6 @@ view = {
 }
 
 def main():
-
     # --------------------------------------
     # Initialization
     # --------------------------------------
@@ -40,7 +39,7 @@ def main():
         'data/point-clouds/0890-500.ply'
     ]
     
-    filename = filenames[1]  # Choose which file to load
+    filename = filenames[0]  # Choose which file to load
     print('Loading file: ' + filename)
     point_cloud_original = o3d.io.read_point_cloud(filename)
     
@@ -67,7 +66,7 @@ def main():
     T[0:3, 3] = [0, -1400, 15000]
     
     # Apply transformation
-    point_cloud_downsampled.transform(np.linalg.inv(T))
+    # point_cloud_downsampled.transform(np.linalg.inv(T))
     
     # Create table reference system
     frame_world = o3d.geometry.TriangleMesh().create_coordinate_frame(size=2000, origin=np.array([0., 0., 0.]))
@@ -75,7 +74,7 @@ def main():
     # --------------------------------------
     # Bounding Box
     # --------------------------------------
-    sx, sy, sz_top, sz_bottom = 3000, 5000, 3000, -2000
+    sx, sy, sz_top, sz_bottom = 3000, 7000, 3000, -2000
     np_vertices = np.array([
         [sx, sy, sz_top], [sx, -sy, sz_top], [-sx, -sy, sz_top], [-sx, sy, sz_top],
         [sx, sy, sz_bottom], [sx, -sy, sz_bottom], [-sx, -sy, sz_bottom], [-sx, sy, sz_bottom]
@@ -89,13 +88,14 @@ def main():
     
     point_cloud_cropped = point_cloud_downsampled.crop(bounding_box)
 
-    point_cloud_downsampled.paint_uniform_color([0.4, 0.3, 0.3])
+    # point_cloud_downsampled.paint_uniform_color([0.4, 0.3, 0.3])
     # point_cloud_cropped.paint_uniform_color([0.9, 0.0, 0.0])
     print(point_cloud_cropped)
 
     # Save the cropped point cloud
-    output_filename = 'data/point-clouds/cropped_point_cloud-0380-voxel.ply'
+    output_filename = 'data/point-clouds/cropped_point_cloud-0280-voxel.ply'
     o3d.io.write_point_cloud(output_filename, point_cloud_cropped)
+
     # --------------------------------------
     # Visualization
     # --------------------------------------
@@ -105,6 +105,8 @@ def main():
                                       front=view['trajectory'][0]['front'],
                                       lookat=view['trajectory'][0]['lookat'],
                                       up=view['trajectory'][0]['up'])
+    
+    
 
 if __name__ == "__main__":
     main()
