@@ -1,5 +1,12 @@
+# Kienct 1
 kinect1/data/
-kinect2/data/
+
+# Kinect 2
+kinect2/data_d0/
+kinect2/data_d30/
+kinect2/venv-kinect2/
+
+# RealSense
+RealSense/venv-realsense
 RealSense/data/
-RealSense/code/test.py
-RealSense/code/create-point-cloud.py
+
