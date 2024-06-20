@@ -38,9 +38,12 @@ def main():
     # Load the point clouds from .ply files
     pcd_d0 = o3d.io.read_point_cloud("0005_d0.ply")
     pcd_d30 = o3d.io.read_point_cloud("0005_d30.ply")
+     
+    # pcd_d0.paint_uniform_color([0, 0, 0])
 
-    # Visualize the segmented planes
-    fig1 = o3d.visualization.draw_geometries([pcd_d0, pcd_d30])
+
+    # Visualize the original point clouds
+    o3d.visualization.draw_geometries([pcd_d0, pcd_d30], window_name='Original Point Clouds')
 
     # Segment the largest planes
     plane_d0, plane_model_d0 = segment_largest_plane(pcd_d0)
@@ -48,16 +51,16 @@ def main():
 
     # Calculate the angle between the largest planes
     angle = calculate_angle_between_planes(plane_model_d0, plane_model_d30)
-
     print(f"Angle between the largest planes: {angle:.2f} degrees")
 
     # Color the planes for visualization
     plane_d0.paint_uniform_color([1, 0, 0])  # Red
     plane_d30.paint_uniform_color([0, 0, 1])  # Blue
+    print(pcd_d0)
+    print(plane_d0)
 
     # Visualize the segmented planes
-    fig2 = o3d.visualization.draw_geometries([plane_d0, plane_d30])
-
+    o3d.visualization.draw_geometries([plane_d0, plane_d30])
 
 if __name__ == "__main__":
     main()
