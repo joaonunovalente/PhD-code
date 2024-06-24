@@ -22,10 +22,10 @@ def depth_to_point_cloud(depth_img, rgb_img, fx, fy, cx, cy):
     return np.array(points)
 
 def main():
-    frame = '0005'
+    frame = 'frame_1'
     # Load depth image and RGB image
-    depth_img = cv2.imread('../data/depth/' + frame + '.png', cv2.IMREAD_ANYDEPTH)
-    rgb_img = cv2.imread('../data/color/' + frame + '.png')
+    depth_img = cv2.imread('../../data/depth_frame_1.png', cv2.IMREAD_ANYDEPTH)
+    rgb_img = cv2.imread('../../data/registered_image_1.png')
 
     # Intrinsic parameters (fx, fy, cx, cy)
     fx, fy, cx, cy = 320, 200, 256, 185
@@ -37,6 +37,7 @@ def main():
     pcd = o3d.geometry.PointCloud()
     pcd.points = o3d.utility.Vector3dVector(points[:, :3])
     pcd.colors = o3d.utility.Vector3dVector(points[:, 3:] / 255.0)  # Normalize RGB values
+    print(pcd.points)
 
     # Save point cloud as .ply file
     o3d.io.write_point_cloud('../results/' + frame + '.ply', pcd)

@@ -1,119 +1,77 @@
 #!/usr/bin/env python
 
-import os
-import cv2
+import cv2 as cv
 import numpy as np
 from pylibfreenect2 import Freenect2, SyncMultiFrameListener, FrameType, Registration, Frame
 
-def setup_directories(base_dir):
-    """Create directories to save frames if they don't exist."""
-    color_dir = os.path.join(base_dir, "color")
-    depth_dir = os.path.join(base_dir, "depth")
-    os.makedirs(color_dir, exist_ok=True)
-    os.makedirs(depth_dir, exist_ok=True)
-    return color_dir, depth_dir
+# Initialize the Freenect2 device
+fn = Freenect2()
+if fn.enumerateDevices() == 0:
+    print("No device connected!")
+    exit(1)
 
-def main():
-    base_dir = "../data"
-    color_dir, depth_dir = setup_directories(base_dir)
+# Open the first device
+serial = fn.getDeviceSerialNumber(0)
+device = fn.openDevice(serial)
 
-    # Initialize the library
-    fn = Freenect2()
-    num_devices = fn.enumerateDevices()
-    if num_devices == 0:
-        print("No device connected!")
-        return
+# Create a listener
+listener = SyncMultiFrameListener(FrameType.Color | FrameType.Ir | FrameType.Depth)
 
-    # Open the device
-    serial = fn.getDeviceSerialNumber(0)
-    device = fn.openDevice(serial)
+# Register the listener to the device
+device.setColorFrameListener(listener)
+device.setIrAndDepthFrameListener(listener)
 
-    # Setup listeners
-    listener = SyncMultiFrameListener(FrameType.Color | FrameType.Ir | FrameType.Depth)
+# Start the device
+device.start()
 
-    # Register listeners
-    device.setColorFrameListener(listener)
-    device.setIrAndDepthFrameListener(listener)
+# Create registration object with custom parameters
+registration = Registration(device.getIrCameraParams(), device.getColorCameraParams())
 
-    # Start the device
-    device.start()
+# Arrays for storing frames
+undistorted = Frame(512, 424, 4)
+registered = Frame(512, 424, 4)
 
-    # Registration object to map depth to color space
-    registration = Registration(device.getIrCameraParams(), device.getColorCameraParams())
+frame_count = 0  # Initialize frame counter
 
-    # Frame count variable
-    frame_count = 0
+while True:
+    frames = listener.waitForNewFrame()
 
-    try:
-        while True:
-            # Capture new frames from the listener
-            frames = listener.waitForNewFrame()
-            color = frames["color"]
-            depth = frames["depth"]
+    color_frame = frames["color"]
+    depth_frame = frames["depth"]
 
-            # Convert the color image to BGR format
-            color_img = cv2.cvtColor(color.asarray(), cv2.COLOR_RGB2BGR)
+    # Convert the color image to BGR format and flip horizontally
+    color = cv.flip(color_frame.asarray(np.uint8), 1)
 
-            # Get the depth image as float32
-            depth_img = depth.asarray(np.float32)
+    # Flip the depth image horizontally
+    depth = cv.flip(depth_frame.asarray(np.float32), 1)
 
-            # Prepare an empty image for the registered color frame
-            registered_color = np.zeros((depth_img.shape[0], depth_img.shape[1], 3), dtype=np.uint8)
+    # Apply registration
+    registration.apply(color_frame, depth_frame, undistorted, registered)
 
-            # Create frame objects to hold the registered output
-            undistorted = Frame(depth_img.shape[1], depth_img.shape[0], 4)
-            registered = Frame(depth_img.shape[1], depth_img.shape[0], 4)
+    # Normalize depth for display
+    depth_display = cv.normalize(depth, None, 0, 1, cv.NORM_MINMAX, cv.CV_32F)
 
-            # Perform the mapping
-            registration.apply(color, depth, undistorted, registered)
+    # Convert registered image to BGR format and flip horizontally
+    registered_image = cv.flip(registered.asarray(np.uint8), 1)
 
-            # Convert the registered frame to a numpy array
-            registered_img = registered.asarray(np.uint8)
+    # Display the images
+    cv.imshow('Color', color)
+    cv.imshow('Depth', depth_display)
+    cv.imshow('Registered Image', registered_image)
 
-            # Extract the color channels from the registered image
-            registered_color[:, :, 0] = registered_img[:, :, 0]  # Blue
-            registered_color[:, :, 1] = registered_img[:, :, 1]  # Green
-            registered_color[:, :, 2] = registered_img[:, :, 2]  # Red
+    key = cv.waitKey(1) & 0xFF
+    if key == 27:  # Press 'ESC' to exit
+        break
+    elif key == ord('s'):  # Press 's' to save frames
+        cv.imwrite(f'../data/registered_image_{frame_count}.png', registered_image)
+        cv.imwrite(f'../data/color_frame_{frame_count}.png', color)
+        cv.imwrite(f'../data/depth_frame_{frame_count}.png', depth_display * 255)  # Normalize depth for saving as image
+        frame_count += 1
+        print(f"Saved color_frame_{frame_count}.png and depth_frame_{frame_count}.png")
 
-            # Clip depth values to the Kinect's range (0 to 4500 mm) and convert to uint16
-            depth_img = np.clip(depth_img, 0, 4500)
-            depth_img = (depth_img * (65535.0 / 4500.0)).astype(np.uint16)
+    listener.release(frames)
 
-            # Clip RGB and depth images
-            registered_color = registered_color[20:390, :]
-            depth_img = depth_img[20:390, :]
-
-            # Normalize depth image for display
-            normalized_depth_img = cv2.normalize(depth_img, None, 0, 255, cv2.NORM_MINMAX)
-            normalized_depth_img = np.uint8(normalized_depth_img)
-
-            # Display images using OpenCV
-            cv2.imshow("Color", color_img)
-            cv2.imshow("Depth", normalized_depth_img)  # Normalize for display
-            cv2.imshow("Registered Color", registered_color)
-
-            # Save the color and depth images
-            color_filename = os.path.join(color_dir, f"{frame_count:04d}.png")
-            depth_filename = os.path.join(depth_dir, f"{frame_count:04d}.png")
-            cv2.imwrite(color_filename, registered_img)
-            cv2.imwrite(depth_filename, depth_img)
-
-            frame_count += 1
-
-            # Exit if the 'ESC' key is pressed
-            if cv2.waitKey(1) == 27:
-                break
-
-            # Release frames to free memory
-            listener.release(frames)
-
-    except KeyboardInterrupt:
-        print("Interrupted by user, shutting down...")
-    finally:
-        # Clean up and close OpenCV windows
-        device.stop()
-        device.close()
-        cv2.destroyAllWindows()
-
-if __name__ == "__main__":
-    main()
+# Clean up
+device.stop()
+device.close()
+cv.destroyAllWindows()
