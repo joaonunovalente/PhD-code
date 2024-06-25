@@ -31,16 +31,16 @@ def save_point_cloud(points, colors, output_file):
     o3d.io.write_point_cloud(output_file, pcd)
 
 def main():
-    registered_color_path = '../data/registered_image_2.png'
-    depth_path = '../data/depth_frame_2.png'
-    output_file = '../data/point_cloud_frame_2.ply'
+    registered_color_path = '../example_green_box/registered_image_1.png'
+    depth_path = '../example_green_box/depth_frame_1.png'
+    output_file = '../example_green_box/point_cloud_frame_1.ply'
 
     registered_color_image, depth_image = load_images(registered_color_path, depth_path)
 
     # Example intrinsic matrix, you should replace it with the actual intrinsic matrix of your Kinect
     intrinsic_matrix = np.array([
-        [525.0, 0.0, 319.5],
-        [0.0, 525.0, 239.5],
+        [300.0, 0.0, 319.5],
+        [0.0, 300.0, 239.5],
         [0.0, 0.0, 1.0]
     ])
 
