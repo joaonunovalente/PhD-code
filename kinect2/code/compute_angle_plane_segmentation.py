@@ -37,8 +37,8 @@ def calculate_angle_between_planes(plane_model1, plane_model2):
 
 def main():
     # Load the point clouds from .ply files
-    pcd_d0 = o3d.io.read_point_cloud("../data/point_cloud_frame_0.ply")
-    pcd_d30 = o3d.io.read_point_cloud("../data/point_cloud_frame_1.ply")
+    pcd_d0 = o3d.io.read_point_cloud("../examples/experiment_greenbox_different_angles/point_cloud_frame_0.ply")
+    pcd_d30 = o3d.io.read_point_cloud("../examples/experiment_greenbox_different_angles/point_cloud_frame_1.ply")
      
     # Visualize the original point clouds
     o3d.visualization.draw_geometries([pcd_d0, pcd_d30], window_name='Original Point Clouds')

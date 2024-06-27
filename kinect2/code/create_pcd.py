@@ -34,9 +34,9 @@ def save_point_cloud(points, colors, output_file):
     o3d.io.write_point_cloud(output_file, pcd)
 
 def main():
-    registered_color_path = '../data/registered_image_0.png'
-    depth_path = '../data/depth_frame_0.png'
-    output_file = '../data/point_cloud_frame_0.ply'
+    registered_color_path = '../examples/experiment_greenbox_different_angles/registered_image_0.png'
+    depth_path = '../examples/experiment_greenbox_different_angles/depth_frame_0.png'
+    output_file = '../examples/experiment_greenbox_different_angles/point_cloud_frame_0.ply'
 
     registered_color_image, depth_image = load_images(registered_color_path, depth_path)
 
