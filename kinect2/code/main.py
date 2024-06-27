@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+
 import cv2 as cv
 import numpy as np
 from pylibfreenect2 import Freenect2, SyncMultiFrameListener, FrameType, Registration, Frame

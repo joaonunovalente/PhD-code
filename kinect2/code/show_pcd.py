@@ -4,7 +4,7 @@
 import open3d as o3d
 
 # Load the point cloud
-pcd = o3d.io.read_point_cloud("../data/point_cloud_frame_2.ply")
+pcd = o3d.io.read_point_cloud("../data/point_cloud_frame_0.ply")
 print(pcd)
 
 # Downsample point cloud
