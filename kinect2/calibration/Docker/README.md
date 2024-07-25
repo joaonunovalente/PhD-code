@@ -8,12 +8,12 @@ You have two options to get the Docker image for Noetic-ROS:
 
 ### Build the image from the Dockerfile:
 ```bash
-docker build -t ros-noetic-kinect2 .
+docker build -t noetic-ros-kinect2 .
 ```
 
 ### Download the image from Docker Hub:
 ```bash
-docker pull joaonunovalente/ros-noetic-kinect2
+docker pull joaonunovalente/noetic-ros-kinect2
 ```
 
 ### Run the Docker Container
@@ -29,8 +29,8 @@ docker run  -it \
             --ipc=host \
             --network host \
             --privileged \
-            --name ros-noetic-kinect2-container \
-            ros-noetic-kinect2
+            --name noetic-ros-kinect2-container \
+            noetic-ros-kinect2
 ```
 ## Inside the Docker Container
 
