@@ -4,6 +4,7 @@ import cv2 as cv
 import numpy as np
 from pylibfreenect2 import Freenect2, SyncMultiFrameListener, FrameType, Registration, Frame
 import rospy
+
 from cv_bridge import CvBridge, CvBridgeError
 from sensor_msgs.msg import Image
 
