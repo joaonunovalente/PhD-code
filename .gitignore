@@ -2,8 +2,6 @@
 kinect1/data/
 
 # Kinect 2
-kinect2/data_d0/
-kinect2/data_d30/
 kinect2/venv-kinect2
 
 # RealSense
