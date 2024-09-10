@@ -8,3 +8,6 @@ kinect2/venv-kinect2
 RealSense/data/
 RealSense/venv-realsense
 
+# CAD
+cad/venv-cad
+
