@@ -9,5 +9,5 @@ RealSense/data/
 RealSense/venv-realsense
 
 # CAD
-cad/venv-cad
+cad/.venv
 
