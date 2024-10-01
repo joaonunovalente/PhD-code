@@ -1,13 +1,9 @@
-# Kienct 1
+# Kinect 1
 kinect1/data/
 
 # Kinect 2
-kinect2/venv-kinect2
+kinect2/venv-kinect2/
 
 # RealSense
-RealSense/data/
-RealSense/venv-realsense
-
-# CAD
-cad/.venv
+RealSense/.venv/
 

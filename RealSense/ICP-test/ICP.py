@@ -1,15 +1,19 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import open3d as o3d
 import numpy as np
 
 # Load source and target meshes
-source_mesh = o3d.io.read_triangle_mesh("../data/domino-plane.ply")
-target_mesh = o3d.io.read_triangle_mesh("../data/domino-box.ply")
+source_mesh = o3d.io.read_triangle_mesh("domino-plane.ply")
+target_mesh = o3d.io.read_triangle_mesh("domino-box.ply")
 
 # Convert both meshes to point clouds
-source = source_mesh.sample_points_uniformly(number_of_points=100)
-target = target_mesh.sample_points_uniformly(number_of_points=1000)
+source = source_mesh.sample_points_uniformly(number_of_points=10_000)
+target = target_mesh.sample_points_uniformly(number_of_points=100_000)
+
+# Paint the point clouds
+source.paint_uniform_color([1, 0.984, 0])
+target.paint_uniform_color([0, 0.784, 1])
 
 # Define the rotation angle in degrees and convert to radians
 angle_degrees = 45
