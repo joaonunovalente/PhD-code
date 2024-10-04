@@ -1,8 +1,8 @@
 # Kinect 1
-kinect1/data/
+kinect1/.venv/
 
 # Kinect 2
-kinect2/venv-kinect2/
+kinect2/.venv/
 
 # RealSense
 RealSense/.venv/
