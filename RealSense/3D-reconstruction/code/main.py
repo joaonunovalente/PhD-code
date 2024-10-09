@@ -333,7 +333,6 @@ def main():
     Returns:
         None
     """
-    
     # ------------------------------------
     # Prepare the dataset and apply
     # FPFH (Fast Point Feature Histograms)
@@ -416,9 +415,9 @@ def main():
     # ------------------------------------
     # Merge the transformed source with the target point cloud
     # ------------------------------------
-    
+
     merged_cloud = merge_point_clouds(source, target, result_icp.transformation)
-    save_point_cloud(merged_cloud, "../results/point_cloud_merged.ply")
+    save_point_cloud(merged_cloud, "../results/point_cloud_local_registration.ply")
 
     # ------------------------------------
     # Compute the rotation angle
@@ -430,9 +429,6 @@ def main():
     
     # Print the computed rotation angle.
     print(f"Rotation angle: {rotation_angle:.2f} degrees")
-
-
-
 
 
 if __name__ == "__main__":
