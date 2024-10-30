@@ -85,7 +85,7 @@ if __name__ == "__main__":
     depth_filename = os.path.join(save_dir, f"depth_{image_counter:04d}.png")
 
     # Output point cloud filename
-    output_file = f"point_cloud_{image_counter:04d}.ply"
+    output_file = save_dir + f"point_cloud_{image_counter:04d}.ply"
 
     # Create the point cloud
     create_point_cloud(color_filename, depth_filename, output_file)

@@ -81,13 +81,20 @@ def load_point_clouds() -> tuple[o3d.geometry.PointCloud, o3d.geometry.PointClou
     Returns:
         tuple: A tuple containing the source and target point clouds.
     """
-    # Load the source and target meshes
-    source_mesh = o3d.io.read_triangle_mesh("../data/front-view.ply")
-    target_mesh = o3d.io.read_triangle_mesh("../data/side-view.ply")
+    if False:
+        # Load the source and target meshes
+        source_mesh = o3d.io.read_triangle_mesh("../data/front-view.ply")
+        target_mesh = o3d.io.read_triangle_mesh("../data/side-view.ply")
 
-    # Convert meshes to point clouds by sampling points uniformly from the mesh surface
-    source_pcd = source_mesh.sample_points_uniformly(number_of_points=100_000)
-    target_pcd = target_mesh.sample_points_uniformly(number_of_points=100_000)
+        # Convert meshes to point clouds by sampling points uniformly from the mesh surface
+        source_pcd = source_mesh.sample_points_uniformly(number_of_points=100_000)
+        target_pcd = target_mesh.sample_points_uniformly(number_of_points=100_000)
+    else:
+        # Load the source and target point clouds
+        source_pcd = o3d.io.read_point_cloud("../data/point_cloud_0001.ply")
+        target_pcd = o3d.io.read_point_cloud("../data/point_cloud_0004.ply")
+        # source_pcd = o3d.io.read_point_cloud("../data/golden_tree/point_cloud_0001.ply")
+        # target_pcd = o3d.io.read_point_cloud("../data/golden_tree/point_cloud_0004.ply")
 
     return source_pcd, target_pcd
 
@@ -187,6 +194,37 @@ def execute_global_registration(source_down: o3d.geometry.PointCloud,
     return result
 
 
+# def refine_registration(source: o3d.geometry.PointCloud, 
+#                         target: o3d.geometry.PointCloud, 
+#                         voxel_size: float, 
+#                         result_ransac: o3d.pipelines.registration.RegistrationResult) -> o3d.pipelines.registration.RegistrationResult:
+#     """
+#     Refine the registration result using point-to-plane ICP (Iterative Closest Point).
+
+#     Args:
+#         source (o3d.geometry.PointCloud): Original source point cloud.
+#         target (o3d.geometry.PointCloud): Original target point cloud.
+#         voxel_size (float): Voxel size used for downsampling.
+#         result_ransac (o3d.pipelines.registration.RegistrationResult): Initial transformation obtained from RANSAC.
+
+#     Returns:
+#         o3d.pipelines.registration.RegistrationResult: The refined registration result.
+#     """
+#     # Define a smaller distance threshold for ICP refinement
+#     distance_threshold = voxel_size * 0.4
+#     print(":: Point-to-plane ICP registration is applied on original point clouds")
+#     print("   clouds to refine the alignment. This time we use a strict")
+#     print("   distance threshold %.3f." % distance_threshold)
+    
+#     # Perform point-to-plane ICP to refine the alignment
+#     result = o3d.pipelines.registration.registration_icp(source, 
+#                                                          target, 
+#                                                          distance_threshold, 
+#                                                          result_ransac.transformation, 
+#                                                          o3d.pipelines.registration.TransformationEstimationPointToPlane())
+    
+#     return result
+
 def refine_registration(source: o3d.geometry.PointCloud, 
                         target: o3d.geometry.PointCloud, 
                         voxel_size: float, 
@@ -203,6 +241,13 @@ def refine_registration(source: o3d.geometry.PointCloud,
     Returns:
         o3d.pipelines.registration.RegistrationResult: The refined registration result.
     """
+    # Ensure normals are estimated for both source and target point clouds
+    radius_normal = voxel_size * 2
+    print(":: Estimate normals for the original point clouds.")
+    
+    source.estimate_normals(o3d.geometry.KDTreeSearchParamHybrid(radius=radius_normal, max_nn=30))
+    target.estimate_normals(o3d.geometry.KDTreeSearchParamHybrid(radius=radius_normal, max_nn=30))
+
     # Define a smaller distance threshold for ICP refinement
     distance_threshold = voxel_size * 0.4
     print(":: Point-to-plane ICP registration is applied on original point clouds")
@@ -217,6 +262,7 @@ def refine_registration(source: o3d.geometry.PointCloud,
                                                          o3d.pipelines.registration.TransformationEstimationPointToPlane())
     
     return result
+
 
 
 def execute_fast_global_registration(source_down: o3d.geometry.PointCloud, 
@@ -340,7 +386,7 @@ def main():
     
     # Set the voxel size for downsampling the point clouds.
     # Smaller voxel sizes yield higher point cloud resolution but increase computational cost.
-    voxel_size = 0.01  # 1cm for this dataset
+    voxel_size = 0.05  # 1cm for this dataset
 
     # Load and preprocess the source and target point clouds.
     # The function `prepare_dataset` returns the original point clouds and their downsampled
