@@ -14,7 +14,7 @@ def get_intrinsics_from_calibration():
         'fy': 620.040790,  # Focal length Y
         'cx': 317.384525,  # Principal point X
         'cy': 256.749749,  # Principal point Y
-        'depth_scale': 0.0010000000474974513  # Depth scale, adjust if necessary
+        'depth_scale':  0.001 # Depth scale, adjust if necessary
     }
     return intrinsics
 

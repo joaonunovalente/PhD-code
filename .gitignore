@@ -7,3 +7,9 @@ kinect2/.venv/
 # RealSense
 RealSense/.venv/
 
+# Point Cloud too big
+ORBBEC/dataset/ORBBEC/Front/RGBD/pointcloud.ply
+ORBBEC/dataset/ORBBEC/Side/RGBD/pointcloud.ply
+ORBBEC/transformed.ply
+
+
