@@ -12,6 +12,9 @@ ORBBEC/dataset/ORBBEC/Front/RGBD/pointcloud.ply
 ORBBEC/dataset/ORBBEC/Side/RGBD/pointcloud.ply
 ORBBEC/transformed.ply
 
+ORBBEC/results/Monocolour_marged.ply
+ORBBEC/results/RGB_marged.ply
+
 
 # Temporary files
 ORBBEC/downsample.py

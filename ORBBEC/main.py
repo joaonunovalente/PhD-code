@@ -37,23 +37,29 @@ def apply_transformation(source_ply, transformation_matrix):
     source.transform(transformation_matrix)
     return source
 
-def downsample_point_cloud(point_cloud, voxel_size=100):
+def downsample_point_cloud(point_cloud, voxel_size=10):
     return point_cloud.voxel_down_sample(voxel_size)
 
-def visualize_point_clouds(source_ply, transformed_ply, target_ply=None, voxel_size=0.02):
+def visualize_point_clouds(source_ply, transformed_ply, target_ply=None, voxel_size=10):
     source = o3d.io.read_point_cloud(source_ply)
     transformed = o3d.io.read_point_cloud(transformed_ply)
+    
     
     source = downsample_point_cloud(source, voxel_size)
     transformed = downsample_point_cloud(transformed, voxel_size)
     
     transformed.paint_uniform_color([1, 0, 0])  # Red
-    point_clouds = [source, transformed]
+    source.paint_uniform_color([0, 1, 0])  # Green
+
+    
+    point_clouds = [transformed]
     
     if target_ply:
         target = o3d.io.read_point_cloud(target_ply)
         target = downsample_point_cloud(target, voxel_size)
+        target.paint_uniform_color([0, 0, 1]) # Blue
         point_clouds.append(target)
+        
     
     o3d.visualization.draw_geometries(point_clouds)
 
@@ -62,20 +68,39 @@ def main():
     source_ply = "dataset/ORBBEC/Front/RGBD/pointcloud.ply"
     target_ply = "dataset/ORBBEC/Side/RGBD/pointcloud.ply"
     transformed_ply = "transformed.ply"
+    merged_ply = "merged_pointcloud.ply"  # File to save merged point cloud
     
+    # Load transformations
     est_matrix, est_translation, est_angles, ref_matrix, ref_translation, ref_angles = load_transformations(pickle_path)
     
     print("--------- Estimated Transformation -----------")
     print(f"Translation: {est_translation}")
-    print(f"Rotation (Roll, Pitch, Yaw): ({est_angles[0]:.10f}, {est_angles[1]:.10f}, {est_angles[2]:.10f})\n")
+    print(f"Rotation (Roll, Pitch, Yaw): ({est_angles[0]:.2f}, {est_angles[1]:.2f}, {est_angles[2]:.2f})\n")
     
     print("--------- Refined Transformation -----------")
     print(f"Translation: {ref_translation}")
-    print(f"Rotation (Roll, Pitch, Yaw): ({ref_angles[0]:.10f}, {ref_angles[1]:.10f}, {ref_angles[2]:.10f})")
+    print(f"Rotation (Roll, Pitch, Yaw): ({ref_angles[0]:.2f}, {ref_angles[1]:.2f}, {ref_angles[2]:.2f})")
     
+    # Apply transformation to source
     transformed = apply_transformation(source_ply, ref_matrix)
-    # o3d.io.write_point_cloud(transformed_ply, transformed)
-    visualize_point_clouds(source_ply, transformed_ply, target_ply, voxel_size=0.02)
+    transformed.paint_uniform_color([1, 0, 0])  # Red
+    
+    # Save transformed point cloud
+    o3d.io.write_point_cloud(transformed_ply, transformed)
+    
+    # Load target point cloud
+    target = o3d.io.read_point_cloud(target_ply)
+    target.paint_uniform_color([0, 0, 1]) # Blue
+
+    # Merge point clouds
+    merged_cloud = transformed + target
+
+    # Save merged point cloud
+    o3d.io.write_point_cloud(merged_ply, merged_cloud)
+    print(f"Merged point cloud saved to: {merged_ply}")
+    
+    # Visualize the merged point cloud
+    visualize_point_clouds(source_ply, transformed_ply, target_ply, voxel_size=10)
 
 if __name__ == "__main__":
     main()
