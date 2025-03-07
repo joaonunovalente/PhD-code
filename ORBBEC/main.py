@@ -74,7 +74,7 @@ def main():
     print(f"Rotation (Roll, Pitch, Yaw): ({ref_angles[0]:.10f}, {ref_angles[1]:.10f}, {ref_angles[2]:.10f})")
     
     transformed = apply_transformation(source_ply, ref_matrix)
-    o3d.io.write_point_cloud(transformed_ply, transformed)
+    # o3d.io.write_point_cloud(transformed_ply, transformed)
     visualize_point_clouds(source_ply, transformed_ply, target_ply, voxel_size=0.02)
 
 if __name__ == "__main__":

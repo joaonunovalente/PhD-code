@@ -13,3 +13,6 @@ ORBBEC/dataset/ORBBEC/Side/RGBD/pointcloud.ply
 ORBBEC/transformed.ply
 
 
+# Temporary files
+ORBBEC/downsample.py
+
