@@ -7,10 +7,17 @@ kinect2/.venv/
 # RealSense
 RealSense/.venv/
 
-# LAR Datset - Point Cloud too big 
-ORBBEC/data/LAR_dataset/ORBBEC/Front/RGBD/pointcloud.ply
-ORBBEC/data/LAR_dataset/ORBBEC/Side/RGBD/pointcloud.ply
-ORBBEC/results/LAR_dataset/transformed.ply
-ORBBEC/results/LAR_dataset/merged_pointcloud.ply
-ORBBEC/results/LAR_dataset/final_results/Monocolour_merged.ply
-ORBBEC/results/LAR_dataset/final_results/RGB_merged.ply
+# ORBBEC
+ORBBEC/code/.venv
+
+# LAR Datset - Point Clouds too big 
+ORBBEC/data/LAR/ORBBEC/Front/RGBD/pointcloud.ply
+ORBBEC/data/LAR/ORBBEC/Side/RGBD/pointcloud.ply
+ORBBEC/results/LAR/transformed.ply
+ORBBEC/results/LAR/merged_pointcloud.ply
+ORBBEC/results/LAR/final_results/Monocolour_merged.ply
+ORBBEC/results/LAR/final_results/RGB_merged.ply
+
+ORBBEC/data/LAR2
+
+ORBBEC/code/pipeline

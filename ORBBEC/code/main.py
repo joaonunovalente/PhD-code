@@ -65,11 +65,11 @@ def visualize_point_clouds(source_ply, transformed_ply, target_ply=None, voxel_s
     o3d.visualization.draw_geometries(point_clouds)
 
 def main():
-    pickle_path = '../data/LAR_dataset/transformation_matrix/ORBBEC.pickle'
-    source_ply = "../data/LAR_dataset/ORBBEC/Front/RGBD/pointcloud.ply"
-    target_ply = "../data/LAR_dataset/ORBBEC/Side/RGBD/pointcloud.ply"
+    pickle_path = '../data/LAR/transformation_matrix/ORBBEC.pickle'
+    source_ply = "../data/LAR/ORBBEC/Front/RGBD/pointcloud.ply"
+    target_ply = "../data/LAR/ORBBEC/Side/RGBD/pointcloud.ply"
 
-    results_folder = "../results/LAR_dataset/"
+    results_folder = "../results/LAR/"
     transformed_ply = results_folder + "transformed.ply"
     merged_ply = results_folder + "merged_pointcloud.ply"  # File to save merged point cloud
     
