@@ -21,6 +21,7 @@ def extract_transformation(matrix):
     return translation.tolist(), (roll_deg, pitch_deg, yaw_deg)
 
 def load_transformations(pickle_path):
+    print(f"Looking for file at: {pickle_path}")
     with open(pickle_path, 'rb') as f:
         data = pickle.load(f)
     
@@ -64,11 +65,14 @@ def visualize_point_clouds(source_ply, transformed_ply, target_ply=None, voxel_s
     o3d.visualization.draw_geometries(point_clouds)
 
 def main():
-    pickle_path = 'results/ORBBEC.pickle'
-    source_ply = "dataset/ORBBEC/Front/RGBD/pointcloud.ply"
-    target_ply = "dataset/ORBBEC/Side/RGBD/pointcloud.ply"
-    transformed_ply = "transformed.ply"
-    merged_ply = "merged_pointcloud.ply"  # File to save merged point cloud
+    pickle_path = '../data/LAR_dataset/transformation_matrix/ORBBEC.pickle'
+    source_ply = "../data/LAR_dataset/ORBBEC/Front/RGBD/pointcloud.ply"
+    target_ply = "../data/LAR_dataset/ORBBEC/Side/RGBD/pointcloud.ply"
+
+    results_folder = "../results/LAR_dataset/"
+    transformed_ply = results_folder + "transformed.ply"
+    merged_ply = results_folder + "merged_pointcloud.ply"  # File to save merged point cloud
+    
     
     # Load transformations
     est_matrix, est_translation, est_angles, ref_matrix, ref_translation, ref_angles = load_transformations(pickle_path)
