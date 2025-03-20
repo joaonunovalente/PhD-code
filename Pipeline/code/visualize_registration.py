@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import os
+import argparse
 import pickle
 import numpy as np
 import open3d as o3d
@@ -45,33 +47,31 @@ def visualize_point_clouds(source_ply, transformed_ply, target_ply=None, voxel_s
     source = o3d.io.read_point_cloud(source_ply)
     transformed = o3d.io.read_point_cloud(transformed_ply)
     
-    
     source = downsample_point_cloud(source, voxel_size)
     transformed = downsample_point_cloud(transformed, voxel_size)
-    
-    # transformed.paint_uniform_color([1, 0, 0])  # Red
-    # source.paint_uniform_color([0, 1, 0])  # Green
-
     
     point_clouds = [transformed]
     
     if target_ply:
         target = o3d.io.read_point_cloud(target_ply)
         target = downsample_point_cloud(target, voxel_size)
-        target.paint_uniform_color([0, 1, 1]) # Blue
+        target.paint_uniform_color([0, 1, 1])  # Blue
         point_clouds.append(target)
         
-    
     o3d.visualization.draw_geometries(point_clouds)
 
-def main():
-    pickle_path = '../data/LAR2/transformation_matrix/left_right.pickle'
-    source_ply = "../data/LAR2/pointclouds/left/RGB/pointcloud.ply"
-    target_ply = "../data/LAR2/pointclouds/right/RGB/pointcloud.ply"
-    results_folder = "../results/LAR2/temp/"
-    transformed_ply = results_folder + "transformed.ply"
-    merged_ply = results_folder + "merged_pointcloud.ply"  # File to save merged point cloud
+def main(test_number, point_cloud_1, point_cloud_2):
+    # Construct paths
+    pickle_path = f'../exhaustive-grid-search/results/test{test_number}/depth_{point_cloud_1}_depth_{point_cloud_2}.pickle'
+    source_ply = f'../data/test{test_number}/color_{point_cloud_1}.ply'
+    target_ply = f'../data/test{test_number}/color_{point_cloud_2}.ply'
     
+    # Create results folder structure
+    results_folder = f"../results/test{test_number}/"
+    os.makedirs(results_folder, exist_ok=True)  # Create the results folder if it doesn't exist
+
+    merged_ply = os.path.join(results_folder, f"merged_{point_cloud_1}_{point_cloud_2}.ply")  # File to save merged point cloud
+    transformed_ply = os.path.join(results_folder, "transformed.ply")  # Save transformed point cloud
     
     # Load transformations
     est_matrix, est_translation, est_angles, ref_matrix, ref_translation, ref_angles = load_transformations(pickle_path)
@@ -86,19 +86,19 @@ def main():
     
     # Apply transformation to source
     transformed = apply_transformation(source_ply, ref_matrix)
-    transformed.paint_uniform_color([1, 1, 0])  # Red
+    transformed.paint_uniform_color([1, 1, 0])  # Yellow
     
     # Save transformed point cloud
     o3d.io.write_point_cloud(transformed_ply, transformed)
     
     # Load target point cloud
     target = o3d.io.read_point_cloud(target_ply)
-    target.paint_uniform_color([0, 1, 1]) # Blue
+    target.paint_uniform_color([0, 1, 1])  # Blue
 
     # Merge point clouds
     merged_cloud = transformed + target
 
-    # Save merged point cloud
+    # Save merged point cloud with the specified name
     o3d.io.write_point_cloud(merged_ply, merged_cloud)
     print(f"Merged point cloud saved to: {merged_ply}")
     
@@ -106,4 +106,11 @@ def main():
     visualize_point_clouds(source_ply, transformed_ply, target_ply, voxel_size=10)
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description='Visualize point clouds based on test and point cloud numbers.')
+    parser.add_argument('test_number', type=int, help='Test number (e.g., 1)')
+    parser.add_argument('point_cloud_1', type=int, help='Point cloud number 1 (e.g., 1)')
+    parser.add_argument('point_cloud_2', type=int, help='Point cloud number 2 (e.g., 2)')
+
+    args = parser.parse_args()
+    main(args.test_number, args.point_cloud_1, args.point_cloud_2)
+

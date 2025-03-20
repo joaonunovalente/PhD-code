@@ -5,8 +5,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Provide the path to your point cloud file
-input_path = "../results/LAR2/pointcloud_left_right_Monocolor.ply"  # Change this to your actual file path
-output_path = "../results/LAR2/pointcloud_left_right_Monocolor_downsampled.ply"
+input_path = "../data/test1/depth_1.ply"  # Change this to your actual file path
+output_path = "../data/test1/depth_1_downsampled.ply"
 
 # Load the point cloud
 pcd = o3d.io.read_point_cloud(input_path)
@@ -22,3 +22,6 @@ print(f"Downsampled point cloud saved to {output_path}")
 
 # Show the point cloud in Open3D
 o3d.visualization.draw_geometries([downsampled_pcd], window_name="Downsampled Point Cloud")
+
+if __name__ == "__main__":
+    pass

@@ -32,7 +32,7 @@ def load_transformations(pickle_path):
     return est_matrix, est_translation, est_angles, ref_matrix, ref_translation, ref_angles
 
 if __name__ == "__main__":
-    pickle_path = 'results/ORBBEC.pickle'
+    pickle_path = '../data/transformation_matrix/results_and_parameters.pickle'
     est_matrix, est_translation, est_angles, ref_matrix, ref_translation, ref_angles = load_transformations(pickle_path)
     
     print("--------- Estimated Transformation -----------")
